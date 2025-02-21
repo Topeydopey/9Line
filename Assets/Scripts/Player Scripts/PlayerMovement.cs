@@ -5,17 +5,53 @@ public class PlayerMovement : MonoBehaviour
     public float MoveSpeed;
     public Rigidbody2D body;
 
+    // Sprites for each direction.
+    public Sprite upSprite;
+    public Sprite downSprite;
+    public Sprite leftSprite;
+    public Sprite rightSprite;
+
+    private SpriteRenderer spriteRenderer;
+
+    void Awake()
+    {
+        // Get the SpriteRenderer component on the same GameObject.
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
     void Update()
     {
         float xInput = Input.GetAxisRaw("Horizontal");
         float yInput = Input.GetAxisRaw("Vertical");
-        if (Mathf.Abs(xInput) > 0)
+
+        // Set the velocity based on input.
+        Vector2 velocity = new Vector2(xInput * MoveSpeed, yInput * MoveSpeed);
+        body.velocity = velocity;
+
+        // Choose which sprite to display based on movement direction.
+        // Use the axis with the larger absolute value to determine the dominant direction.
+        if (Mathf.Abs(xInput) > Mathf.Abs(yInput))
         {
-            body.velocity = new Vector2(xInput * MoveSpeed, body.velocity.y);
+            if (xInput > 0)
+            {
+                spriteRenderer.sprite = rightSprite;
+            }
+            else if (xInput < 0)
+            {
+                spriteRenderer.sprite = leftSprite;
+            }
         }
-        if (Mathf.Abs(yInput) > 0)
+        else if (Mathf.Abs(yInput) > 0)
         {
-            body.velocity = new Vector2(body.velocity.x, yInput * MoveSpeed);
+            if (yInput > 0)
+            {
+                spriteRenderer.sprite = upSprite;
+            }
+            else if (yInput < 0)
+            {
+                spriteRenderer.sprite = downSprite;
+            }
         }
+        // If there's no input, the sprite remains unchanged.
     }
 }
